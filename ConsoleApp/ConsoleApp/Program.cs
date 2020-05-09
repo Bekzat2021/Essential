@@ -6,15 +6,23 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.Write("Enter num 1: ");
-            int num1 = Convert.ToInt32(Console.ReadLine());
+            int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-            Console.Write("Enter num 2: ");
-            int num2 = Convert.ToInt32(Console.ReadLine());
+            int length = numbers.Length;
+            int middle = length / 2;
+            int temp;
 
-            string answer = (num1 == num2) ? $"{num1} = {num2} " : (num1 > num2) ? $"{num1} > {num2}" : $"{num1} < {num2}";
-            Console.WriteLine(answer);
+            for (int i = 0; i < middle; i++)
+            {
+                temp = numbers[i];
+                numbers[i] = numbers[length - i - 1];
+                numbers[length - i - 1] = temp;
+            }
+
+            foreach (var item in numbers)
+            {
+                Console.Write(item + " ");
+            }
         }
-
     }
 }
