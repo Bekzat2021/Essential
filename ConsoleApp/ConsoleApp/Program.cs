@@ -6,20 +6,29 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-            int length = numbers.Length;
-            int middle = length / 2;
-            int temp;
-
-            for (int i = 0; i < middle; i++)
+            char[] letters = new char[10];
+            
+            for (int i = 0; i < letters.Length; i++)
             {
-                temp = numbers[i];
-                numbers[i] = numbers[length - i - 1];
-                numbers[length - i - 1] = temp;
+                Console.Write($" {i + 1} - letter: ");
+                letters[i] = Convert.ToChar(Console.ReadLine());
             }
 
-            foreach (var item in numbers)
+            char temp;
+            for (int i = 0; i < letters.Length; i++)
+            {
+                for (int j = i + 1; j < letters.Length; j++)
+                {
+                    if ((char)letters[i] > (char)letters[j])
+                    {
+                        temp = letters[i];
+                        letters[i] = letters[j];
+                        letters[j] = temp;
+                    }
+                }
+            }
+
+            foreach (var item in letters)
             {
                 Console.Write(item + " ");
             }
