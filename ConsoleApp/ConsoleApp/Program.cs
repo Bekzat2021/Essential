@@ -6,32 +6,32 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            char[] letters = new char[10];
-            
-            for (int i = 0; i < letters.Length; i++)
-            {
-                Console.Write($" {i + 1} - letter: ");
-                letters[i] = Convert.ToChar(Console.ReadLine());
-            }
+            Bread bread = new Bread { Weight = 80 };
+            Butter butter = new Butter { Weight = 20 };
 
-            char temp;
-            for (int i = 0; i < letters.Length; i++)
-            {
-                for (int j = i + 1; j < letters.Length; j++)
-                {
-                    if ((char)letters[i] > (char)letters[j])
-                    {
-                        temp = letters[i];
-                        letters[i] = letters[j];
-                        letters[j] = temp;
-                    }
-                }
-            }
+            Sandwich sandwich = bread + butter;
 
-            foreach (var item in letters)
+            Console.WriteLine(sandwich.Weight);
+        }
+
+        class Bread
+        {
+            public int Weight { get; set; }
+
+            public static Sandwich operator +(Bread bread, Butter butter)
             {
-                Console.Write(item + " ");
+                return new Sandwich { Weight = bread.Weight + butter.Weight };
             }
+        }
+
+        class Butter
+        {
+            public int Weight { get; set; }
+        }
+
+        class Sandwich
+        {
+            public int Weight { get; set; }
         }
     }
 }
