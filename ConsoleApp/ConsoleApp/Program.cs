@@ -6,103 +6,51 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            People people = new People(3);
-            people[0] = new Person { Name = "Tom", Age = 20 };
-            people[1] = new Person { Name = "Bob", Age = 21 };
-            people[2] = new Person { Name = "Sam", Age = 22 };
+            Second s = new Second { Seconds = 115 };
 
-            people.ShowAllPersons();
+            Hour h = s;
 
-            Console.WriteLine(people[1].Name);
-            Console.WriteLine(people["Smith"].Name);
+            Console.WriteLine(h.Hours);
+            Console.WriteLine(h.Minutes);
+            Console.WriteLine(h.Seconds);
         }
     }
 
-    class Person
+    class Second
     {
-        public string Name { get; set; }
-        public int Age { get; set; }
+        public int Seconds { get; set; }
     }
 
-    class People
+    class Minute
     {
-        private Person[] data;
-        public People(int size)
+        public int Seconds { get; set; }
+        public int Minutes { get; set; }
+
+        public static implicit operator Minute(Second s)
         {
-            data = new Person[size];
+            int min = s.Seconds / 60;
+            int sec = s.Seconds % 60;
+            return new Minute { Minutes = min, Seconds = sec };
         }
 
-        public void ShowAllPersons()
+        public static implicit operator Second(Minute m)
         {
-            foreach (var person in data)
-            {
-                Console.WriteLine($"{person.Name} - {person.Age}");
-            }
-        }
-
-        public Person this[int index]
-        {
-            get
-            {
-                return data[index];
-            }
-            set
-            {
-                data[index] = value;
-            }
-        }
-
-        public Person this[string name]
-        {
-            get
-            {
-                Person p = new Person();
-                for (int i = 0; i < data.Length; i++)
-                {
-                    if (data[i]?.Name == name)
-                    {
-                        data[i].Name += " - founded";
-                        return data[i];
-                    }
-                }
-                p.Name += "Not founded";
-                return p;
-            }
+            return new Second { Seconds = (m.Minutes * 60) + (m.Seconds) };
         }
     }
 
-    class Matrix 
+    class Hour
     {
-        private int[,] numbers = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-        
-        public int this[int i, int j]
-        {
-            get
-            {
-                return numbers[i, j];
-            }
-            set
-            {
-                numbers[i, j] = value;
-            }
-        }
+        public int Seconds { get; set; }
+        public int Minutes { get; set; }
+        public int Hours { get; set; }
 
-        public void GetAllLength()
+        public static implicit operator Hour(Second s)
         {
-            Console.WriteLine(numbers.GetLength(0));
-            Console.WriteLine(numbers.GetLength(1));
-        }
-
-        public void ShowArray()
-        {
-            for (int i = 0; i < numbers.GetLength(0); i++)
-            {
-                for (int j = 0; j < numbers.GetLength(1); j++)
-                {
-                    Console.Write(numbers[i, j] + " ");
-                }
-                Console.WriteLine();
-            }
+            int hours = s.Seconds / 3600;
+            int minutes = (s.Seconds % 3600) / 60;
+            int seconds = (s.Seconds % 3600) % 60;
+            return new Hour { Seconds = seconds, Hours = hours, Minutes = minutes };
         }
     }
 }
