@@ -6,36 +6,109 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            Dollar d = new Dollar { Sum = 556 };
-            Console.WriteLine($"$ {d.Sum}");
+            int[] arr = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            TArray<int> array = new TArray<int> (arr);
 
-            Euro e = (Euro)d;
-            Console.WriteLine($"€ {e.Sum}");
+            array.Show();
+            array.Add(9);
+            array.Show();
+
+            Console.WriteLine($"Array length {array.GetLength()}");
+
+            array.Add(158);
+            array.Add(222);
+            array.Show();
+
+            Console.WriteLine($"10 element: {array[9]}");
+            array[9] = 10;
+
+            Console.WriteLine($"Array length {array.GetLength()}");
+            array[10] = 11;
+            array.Show();
+            Console.WriteLine($"10 element: {array[9]}");
+
+            Console.WriteLine("Deleting 2 and 4 element");
+            array.DeleteAtIndex(1);
+            array.DeleteAtIndex(2);
+            array.Show();
+
+            Console.WriteLine($"Array length {array.GetLength()}");
+
+            Console.WriteLine("Deleting last element");
+            array.DeleteAtIndex(8);
+            array.Show();
+
+            Console.WriteLine($"Array length {array.GetLength()}");
         }
     }
 
-    class Dollar
+    class TArray<T>
     {
-        public decimal Sum { get; set; }
-    }
-
-    struct DollarPrice
-    {
-        public static decimal Euro { get; private set; } = 1.08197M;
-    }
-
-    class Euro
-    {
-        public decimal Sum { get; set; }
-
-        public static implicit operator Dollar(Euro e)
+        T[] array;
+        public TArray(params T[] values)
         {
-            return new Dollar { Sum = e.Sum * DollarPrice.Euro };
+            array = values;
         }
 
-        public static explicit operator Euro(Dollar d)
+        public T this[int index]
         {
-            return new Euro { Sum = d.Sum / DollarPrice.Euro };
+            get
+            {
+                return array[index];
+            }
+            set
+            {
+                array[index] = value;
+            }
+        }
+
+        public void DeleteAtIndex(int index)
+        {
+            T[] temp = new T[array.Length - 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (i != index)
+                    temp[i] = array[i];
+                else
+                {
+                    for (int j = i; j < temp.Length; j++)
+                    {
+                        temp[j] = array[j + 1];
+                    }
+                    break;
+                }
+            }
+            array = temp;
+        }
+
+        public int GetLength()
+        {
+            return array.Length;
+        }
+
+        public void Add(T val)
+        {
+            T[] temp = new T[array.Length + 1];
+            for (int i = 0; i < array.Length; i++)
+            {
+                temp[i] = array[i];
+            }
+            temp[array.Length] = val;
+            array = temp;
+        }
+
+        public void Delete()
+        {
+
+        }
+
+        public void Show()
+        {
+            foreach (var item in array)
+            {
+                Console.Write(item + " ");
+            }
+            Console.WriteLine();
         }
     }
 }
