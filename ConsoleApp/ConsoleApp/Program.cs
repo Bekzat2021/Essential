@@ -54,11 +54,17 @@ namespace ConsoleApp
         {
             get
             {
-                return array[index];
+                if (index >= 0 && index < array.Length)
+                    return array[index];
+                else
+                    return default(T);
             }
             set
             {
-                array[index] = value;
+                if(index >= 0 && index<array.Length)
+                    array[index] = value;
+                else
+                    Console.WriteLine("Wrong index");
             }
         }
 
@@ -68,13 +74,13 @@ namespace ConsoleApp
             for (int i = 0; i < array.Length; i++)
             {
                 if (i != index)
+                {
                     temp[i] = array[i];
+                }
                 else
                 {
                     for (int j = i; j < temp.Length; j++)
-                    {
                         temp[j] = array[j + 1];
-                    }
                     break;
                 }
             }
@@ -95,11 +101,6 @@ namespace ConsoleApp
             }
             temp[array.Length] = val;
             array = temp;
-        }
-
-        public void Delete()
-        {
-
         }
 
         public void Show()
