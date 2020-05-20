@@ -6,110 +6,78 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            int[] arr = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-            TArray<int> array = new TArray<int> (arr);
+            Account acc1 = new Account(5000);
+            acc1.Put(220);
+            Account.AccountStateHandler colorHandler = new Account.AccountStateHandler(ColorDisplay);
 
-            array.Show();
-            array.Add(9);
-            array.Show();
+            acc1.RegisterHandler(Display);
+            acc1.RegisterHandler(colorHandler);
+            acc1.Withdraw(1200);
 
-            Console.WriteLine($"Array length {array.GetLength()}");
+            acc1.UnRegisterHandler(Display);
+            acc1.Withdraw(560);
+            acc1.Withdraw(7000);            
+        }
 
-            array.Add(158);
-            array.Add(222);
-            array.Show();
+        static void Display(string message)
+        {
+            Console.WriteLine("Method Display");
+            Console.WriteLine(message);
+        }
 
-            Console.WriteLine($"10 element: {array[9]}");
-            array[9] = 10;
-
-            Console.WriteLine($"Array length {array.GetLength()}");
-            array[10] = 11;
-            array.Show();
-            Console.WriteLine($"10 element: {array[9]}");
-
-            Console.WriteLine("Deleting 2 and 4 element");
-            array.DeleteAtIndex(1);
-            array.DeleteAtIndex(2);
-            array.Show();
-
-            Console.WriteLine($"Array length {array.GetLength()}");
-
-            Console.WriteLine("Deleting last element");
-            array.DeleteAtIndex(8);
-            array.Show();
-
-            Console.WriteLine($"Array length {array.GetLength()}");
+        static void ColorDisplay(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("Method ColorDisplay");
+            Console.WriteLine(message);
+            Console.ResetColor();
         }
     }
 
-    class TArray<T>
+    class Account
     {
-        T[] array;
-        public TArray(params T[] values)
+        private int sum;
+        public delegate void AccountStateHandler(string message);
+        AccountStateHandler _handler;
+        public Account(int sum)
         {
-            array = values;
+            this.sum = sum;
         }
 
-        public T this[int index]
+        public void RegisterHandler(AccountStateHandler handler)
         {
+            _handler += handler;
+        }
+
+        public void UnRegisterHandler(AccountStateHandler handler)
+        {
+            _handler -= handler;
+        }
+
+        public int CurentSum {
             get
             {
-                if (index >= 0 && index < array.Length)
-                    return array[index];
-                else
-                    return default(T);
-            }
-            set
-            {
-                if(index >= 0 && index<array.Length)
-                    array[index] = value;
-                else
-                    Console.WriteLine("Wrong index");
+                return sum;
             }
         }
 
-        public void DeleteAtIndex(int index)
+        public void Put(int sum)
         {
-            T[] temp = new T[array.Length - 1];
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (i != index)
-                {
-                    temp[i] = array[i];
-                }
-                else
-                {
-                    for (int j = i; j < temp.Length; j++)
-                        temp[j] = array[j + 1];
-                    break;
-                }
-            }
-            array = temp;
+            if (sum > 0)
+                this.sum += sum;
         }
 
-        public int GetLength()
+        public void Withdraw(int sum)
         {
-            return array.Length;
-        }
-
-        public void Add(T val)
-        {
-            T[] temp = new T[array.Length + 1];
-            for (int i = 0; i < array.Length; i++)
+            if (sum < this.sum)
             {
-                temp[i] = array[i];
+                this.sum -= sum;
+                _handler?.Invoke($"Сумма {sum} была снята");
             }
-            temp[array.Length] = val;
-            array = temp;
-        }
-
-        public void Show()
-        {
-            foreach (var item in array)
+            else
             {
-                Console.Write(item + " ");
+                _handler?.Invoke($"На счете недостаточно денег");
             }
-            Console.WriteLine();
         }
     }
 }
