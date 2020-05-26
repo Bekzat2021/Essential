@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ConsoleApp
 {
@@ -6,78 +9,55 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            Account acc1 = new Account(5000);
-            acc1.Put(220);
-            Account.AccountStateHandler colorHandler = new Account.AccountStateHandler(ColorDisplay);
-
-            acc1.RegisterHandler(Display);
-            acc1.RegisterHandler(colorHandler);
-            acc1.Withdraw(1200);
-
-            acc1.UnRegisterHandler(Display);
-            acc1.Withdraw(560);
-            acc1.Withdraw(7000);            
-        }
-
-        static void Display(string message)
-        {
-            Console.WriteLine("Method Display");
+            MessageDetails details1 = new MessageDetails
+            {
+                Language = "english",
+                DateTime = "evening",
+                Status = "user"
+            };
+            string message = GetWeclome(details1);
             Console.WriteLine(message);
+
+            MessageDetails details2 = new MessageDetails
+            {
+                Language = "french",
+                DateTime = "morning",
+                Status = "admin"
+            };
+            Console.WriteLine(GetWeclome(details2));
+
+            MessageDetails details3 = new MessageDetails
+            {
+                Language = "spanish",
+                DateTime = "morning",
+                Status = "user"
+            };
+            Console.WriteLine(GetWeclome(details3));
         }
 
-        static void ColorDisplay(string message)
+        static string GetWeclome(MessageDetails details) => (details) switch
         {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("Method ColorDisplay");
-            Console.WriteLine(message);
-            Console.ResetColor();
-        }
+            ("english", "morning", _) => "Good, morning!",
+            ("english", "evening", _) => "Good, evening!",
+            ("german", "morning", _) => "Guten, Morgen!",
+            ("german", "evening", _) => "Guten, Aben!",
+            (_, _, "admin") => "Hello, admin!",
+            (var lang, var dateTime, var status) => $"{lang} not found, {dateTime} unkown, {status} undefined",
+            _ => "Здрасьть"
+        };
     }
 
-    class Account
+    class MessageDetails
     {
-        private int sum;
-        public delegate void AccountStateHandler(string message);
-        AccountStateHandler _handler;
-        public Account(int sum)
-        {
-            this.sum = sum;
-        }
+        public string Language { get; set; }
+        public string DateTime { get; set; }
+        public string Status { get; set; }
 
-        public void RegisterHandler(AccountStateHandler handler)
+        public void Deconstruct(out string lang, out string dateTime, out string status)
         {
-            _handler += handler;
-        }
-
-        public void UnRegisterHandler(AccountStateHandler handler)
-        {
-            _handler -= handler;
-        }
-
-        public int CurentSum {
-            get
-            {
-                return sum;
-            }
-        }
-
-        public void Put(int sum)
-        {
-            if (sum > 0)
-                this.sum += sum;
-        }
-
-        public void Withdraw(int sum)
-        {
-            if (sum < this.sum)
-            {
-                this.sum -= sum;
-                _handler?.Invoke($"Сумма {sum} была снята");
-            }
-            else
-            {
-                _handler?.Invoke($"На счете недостаточно денег");
-            }
+            lang = Language;
+            dateTime = DateTime;
+            status = Status;
         }
     }
 }
