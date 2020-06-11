@@ -1,0 +1,7 @@
+C:\Users\bekza\Desktop\Essential\ConsoleApp\MyApp\bin\Debug\netcoreapp3.1\MyApp.deps.json
+C:\Users\bekza\Desktop\Essential\ConsoleApp\MyApp\bin\Debug\netcoreapp3.1\MyApp.dll
+C:\Users\bekza\Desktop\Essential\ConsoleApp\MyApp\bin\Debug\netcoreapp3.1\MyApp.pdb
+C:\Users\bekza\Desktop\Essential\ConsoleApp\MyApp\obj\Debug\netcoreapp3.1\MyApp.AssemblyInfoInputs.cache
+C:\Users\bekza\Desktop\Essential\ConsoleApp\MyApp\obj\Debug\netcoreapp3.1\MyApp.AssemblyInfo.cs
+C:\Users\bekza\Desktop\Essential\ConsoleApp\MyApp\obj\Debug\netcoreapp3.1\MyApp.dll
+C:\Users\bekza\Desktop\Essential\ConsoleApp\MyApp\obj\Debug\netcoreapp3.1\MyApp.pdb

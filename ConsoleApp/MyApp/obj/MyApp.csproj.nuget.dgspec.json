@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\ConsoleApp\\ConsoleApp.csproj": {}
+    "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\MyApp\\MyApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\ConsoleApp\\ConsoleApp.csproj": {
+    "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\MyApp\\MyApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\ConsoleApp\\ConsoleApp.csproj",
-        "projectName": "ConsoleApp",
-        "projectPath": "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\ConsoleApp\\ConsoleApp.csproj",
+        "projectUniqueName": "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\MyApp\\MyApp.csproj",
+        "projectName": "MyApp",
+        "projectPath": "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\MyApp\\MyApp.csproj",
         "packagesPath": "C:\\Users\\bekza\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\ConsoleApp\\obj\\",
+        "outputPath": "C:\\Users\\bekza\\Desktop\\Essential\\ConsoleApp\\MyApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -41,12 +41,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "dependencies": {
-            "System.Threading.Tasks.Extensions": {
-              "target": "Package",
-              "version": "[4.5.4, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
