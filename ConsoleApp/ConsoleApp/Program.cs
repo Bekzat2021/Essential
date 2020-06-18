@@ -1,10 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Dynamic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ConsoleApp
 {
@@ -12,94 +9,140 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            dynamic person = new PersonObject();
+            LinkedList<string> linkedList = new LinkedList<string>();
+            linkedList.Add("Tom");
+            linkedList.Add("Alice");
+            linkedList.Add("Bob");
+            linkedList.Add("Sam");
 
-            person.Name = "Tom";
-            person.Age = 23;
+            foreach (var item in linkedList)
+            {
+                Console.WriteLine(item);
+            }
 
-            Func<int, int> Incr = delegate (int x) 
-            { 
-                person.Age += x; 
-                return person.Age; 
-            };
+            linkedList.Remove("Alice");
+            foreach (var item in linkedList)
+            {
+                Console.WriteLine(item);
+            }
 
-            person.IncrementAge = Incr;
-            Console.WriteLine($"{person.Name} - {person.Age}");
+            bool isPresent = linkedList.Contains("Sam");
+            Console.WriteLine(isPresent == true ? "Sam присутствует" : "Sam отсутствует");
 
-            person.IncrementAge(4);
-            Console.WriteLine($"{person.Name} - {person.Age}");
-
-            //dynamic viewBag = new System.Dynamic.ExpandoObject();
-            //viewBag.Name = "Tom";
-            //viewBag.Age = 26;
-            //viewBag.Languages = new List<string> { "english", "german", "french" };
-            //Console.WriteLine($"{viewBag.Name} - {viewBag.Age}");
-
-            //foreach (var item in viewBag.Languages)
-            //{
-            //    Console.WriteLine(item);
-            //}
-
-            //viewBag.IncrementAge = (Action<int>)(x => viewBag.Age += x);
-            //viewBag.IncrementAge(6);
-            //Console.WriteLine($"{viewBag.Name} - {viewBag.Age}");
+            linkedList.AppendFirst("Bill");
+            foreach (var item in linkedList)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 
-    class PersonObject : DynamicObject
+    public class LinkedList<T> : IEnumerable<T>
     {
-        Dictionary<string, object> members = new Dictionary<string, object>();
+        Node<T> head;
+        Node<T> tail;
+        int count;
 
-        public override bool TrySetMember(SetMemberBinder binder, object value)
+        public void Add(T data)
         {
-            members[binder.Name] = value;
-            return true;
+            Node<T> node = new Node<T>(data);
+
+            if (head == null)
+                head = node;
+            else
+                tail.Next = node;
+
+            tail = node;
+            count++;
         }
 
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
+        public bool Remove(T data)
         {
-            result = null;
-            if (members.ContainsKey(binder.Name))
+            Node<T> current = head;
+            Node<T> previous = null;
+
+            while(current != null)
             {
-                result = members[binder.Name];
-                return true;
+                if (current.Data.Equals(data))
+                {
+                    if (previous != null)
+                    {
+                        previous.Next = current.Next;
+
+                        if (current.Next == null)
+                            tail = previous;
+                    }
+                    else
+                    {
+                        head = head.Next;
+
+                        if (head == null)
+                            tail = null;
+                    }
+                    count--;
+                    return true;
+                }
+                previous = current;
+                current = current.Next;
             }
             return false;
         }
 
-        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+        public int Count { get { return count; } }
+        public bool IsEmpty { get { return count == 0; } }
+
+        public void Clear()
         {
-            dynamic method = members[binder.Name];
-            result = method((int)args[0]);
-            return result != null;
+            head = null;
+            tail = null;
+            count = 0;
+        }
+
+        public bool Contains(T data)
+        {
+            Node<T> current = head;
+            while (current != null)
+            {
+                if (current.Data.Equals(data))
+                    return true;
+                current = current.Next;
+            }
+            return false;
+        }
+
+        public void AppendFirst(T data)
+        {
+            Node<T> node = new Node<T>(data);
+            node.Next = head;
+            head = node;
+            if (count == 0)
+                tail = head;
+            count++;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)this).GetEnumerator();
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            Node<T> current = head;
+            while(current != null)
+            {
+                yield return current.Data;
+                current = current.Next;
+            }
         }
     }
 
-    #region Person class
-    class Person
+    public class Node<T>
     {
-        public string Name { get; set; }
-        public dynamic Age { get; set; }
-
-        public dynamic GetSalary(dynamic value, string format)
+        public Node(T data)
         {
-            if (format == "string")
-            {
-                return value + " рублей";
-            }
-            else if (format == "int")
-            {
-                return value;
-            }
-            else
-            {
-                return 0.0;
-            }
+            Data = data;
         }
-        public override string ToString()
-        {
-            return Name + ", " + Age.ToString();
-        }
+        public T Data { get; set; }
+        public Node<T> Next { get; set; }
     }
-    #endregion
 }

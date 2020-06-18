@@ -1,21 +1,25 @@
 ﻿using System;
 
-namespace MyApp
+namespace ConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(GetResult(6, 100, 2));
+            int number = 5;
+            int result = Factorial(number);
+
+            Console.WriteLine($"Факториал числа {number} равен {result}");
         }
 
-        public static double GetResult(int percent, double capital, int year)
+        public static int Factorial(int n)
         {
-            for (int i = 0; i < year; i++)
+            int result = 1;
+            for (int i = 1; i <= n; i++)
             {
-                capital += capital / 100 * percent;
+                result *= i;
             }
-            return capital;
+            return result;
         }
     }
 }

@@ -1,8 +1,0 @@
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\bin\Debug\netcoreapp3.1\Cats.deps.json
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\bin\Debug\netcoreapp3.1\Cats.dll
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\bin\Debug\netcoreapp3.1\Cats.pdb
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\obj\Debug\netcoreapp3.1\Cats.csprojAssemblyReference.cache
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\obj\Debug\netcoreapp3.1\Cats.AssemblyInfoInputs.cache
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\obj\Debug\netcoreapp3.1\Cats.AssemblyInfo.cs
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\obj\Debug\netcoreapp3.1\Cats.dll
-C:\Users\bekza\Desktop\Essential\ConsoleApp\Cats\obj\Debug\netcoreapp3.1\Cats.pdb
