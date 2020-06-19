@@ -9,140 +9,113 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            LinkedList<string> linkedList = new LinkedList<string>();
-            linkedList.Add("Tom");
-            linkedList.Add("Alice");
-            linkedList.Add("Bob");
-            linkedList.Add("Sam");
+            DoubleList<string> names = new DoubleList<string>();
+            names.Add("Joe");
+            names.AddFirst("Bob");
+            names.Add("Smith");
+            names.Add("Tony");
+            names.ShowAll();
 
-            foreach (var item in linkedList)
-            {
-                Console.WriteLine(item);
-            }
-
-            linkedList.Remove("Alice");
-            foreach (var item in linkedList)
-            {
-                Console.WriteLine(item);
-            }
-
-            bool isPresent = linkedList.Contains("Sam");
-            Console.WriteLine(isPresent == true ? "Sam присутствует" : "Sam отсутствует");
-
-            linkedList.AppendFirst("Bill");
-            foreach (var item in linkedList)
-            {
-                Console.WriteLine(item);
-            }
+            names.Remove("Bob");
+            names.ShowAll();
         }
     }
 
-    public class LinkedList<T> : IEnumerable<T>
+    public class DoubleList<T>
     {
-        Node<T> head;
-        Node<T> tail;
-        int count;
+        public DoubleNode<T> First { get; set; }
+        public int Count { get; private set; }
+        public bool IsEmpty { get { return Count == 0; } }
+        private DoubleNode<T> Tail;
 
+        public void AddFirst(T data)
+        {
+            DoubleNode<T> current = new DoubleNode<T>(data);
+            if (First == null)
+            {
+                First = current;
+                Tail = current;
+            }
+            else
+            {
+                DoubleNode<T> temp = First;
+                First = current;
+                temp.Previous = current;
+                current.Next = temp;
+            }
+            Count++;
+        }
         public void Add(T data)
         {
-            Node<T> node = new Node<T>(data);
-
-            if (head == null)
-                head = node;
-            else
-                tail.Next = node;
-
-            tail = node;
-            count++;
-        }
-
-        public bool Remove(T data)
-        {
-            Node<T> current = head;
-            Node<T> previous = null;
-
-            while(current != null)
+            DoubleNode<T> current = new DoubleNode<T>(data);
+            if (First == null)
             {
-                if (current.Data.Equals(data))
-                {
-                    if (previous != null)
-                    {
-                        previous.Next = current.Next;
-
-                        if (current.Next == null)
-                            tail = previous;
-                    }
-                    else
-                    {
-                        head = head.Next;
-
-                        if (head == null)
-                            tail = null;
-                    }
-                    count--;
-                    return true;
-                }
-                previous = current;
-                current = current.Next;
+                First = current;
             }
-            return false;
+            else
+            {
+                Tail.Next = current;
+                current.Previous = Tail;
+            }
+            Count++;
+            Tail = current;
         }
 
-        public int Count { get { return count; } }
-        public bool IsEmpty { get { return count == 0; } }
+        public void Remove(T data)
+        {
+            DoubleNode<T> current = new DoubleNode<T>(data);
+            DoubleNode<T> currentSearchObject = First;
+            while (currentSearchObject != null)
+            {
+                if (currentSearchObject.Data.Equals(data))
+                {
+                    if(currentSearchObject == Tail && currentSearchObject.Previous != null)
+                    {
+                        currentSearchObject.Previous.Next = null;
+                        currentSearchObject = null;
+                    }
+                    if (currentSearchObject == First && currentSearchObject.Next != null)
+                    {
+                        First = currentSearchObject;
+                        currentSearchObject.Previous = null;
+                    }
+                    else if(currentSearchObject == First)
+                    {
+                        First = null;
+                    }
+                }
+                currentSearchObject = currentSearchObject.Next;
+            }
+        }
 
         public void Clear()
         {
-            head = null;
-            tail = null;
-            count = 0;
+            First = null;
+            Tail = null;
+            Count = 0;
         }
 
-        public bool Contains(T data)
+        public void ShowAll()
         {
-            Node<T> current = head;
+            DoubleNode<T> current = First;
             while (current != null)
             {
-                if (current.Data.Equals(data))
-                    return true;
+                Console.WriteLine(current.Data);
                 current = current.Next;
             }
-            return false;
-        }
-
-        public void AppendFirst(T data)
-        {
-            Node<T> node = new Node<T>(data);
-            node.Next = head;
-            head = node;
-            if (count == 0)
-                tail = head;
-            count++;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)this).GetEnumerator();
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            Node<T> current = head;
-            while(current != null)
-            {
-                yield return current.Data;
-                current = current.Next;
-            }
+            Console.WriteLine();
         }
     }
 
-    public class Node<T>
+    public class DoubleNode<T>
     {
-        public Node(T data)
+        public T Data { get; set; }
+        public DoubleNode(T data)
         {
             Data = data;
         }
-        public T Data { get; set; }
-        public Node<T> Next { get; set; }
+        public DoubleNode<T> Next { get; set; }
+        public DoubleNode<T> Previous { get; set; }
     }
+
 }
