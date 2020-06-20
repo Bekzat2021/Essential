@@ -10,14 +10,13 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             DoubleList<string> names = new DoubleList<string>();
-            names.Add("Joe");
             names.AddFirst("Bob");
+            names.Add("Joe");
             names.Add("Smith");
             names.Add("Tony");
             names.ShowAll();
 
-            names.Remove("Bob");
-            names.ShowAll();
+            Console.WriteLine(names.Contains("Joe"));
         }
     }
 
@@ -63,29 +62,53 @@ namespace ConsoleApp
 
         public void Remove(T data)
         {
-            DoubleNode<T> current = new DoubleNode<T>(data);
-            DoubleNode<T> currentSearchObject = First;
-            while (currentSearchObject != null)
+            DoubleNode<T> currentItem = First;
+            while (currentItem != null)
             {
-                if (currentSearchObject.Data.Equals(data))
+                if (currentItem.Data.Equals(data))
                 {
-                    if(currentSearchObject == Tail && currentSearchObject.Previous != null)
+                    if (currentItem.Previous != null && currentItem.Next != null)
                     {
-                        currentSearchObject.Previous.Next = null;
-                        currentSearchObject = null;
+                        currentItem.Next.Previous = currentItem.Previous;
+                        currentItem.Previous.Next = currentItem.Next;
+                        Count--;
+                        return;
                     }
-                    if (currentSearchObject == First && currentSearchObject.Next != null)
+                    else if(currentItem == First)
                     {
-                        First = currentSearchObject;
-                        currentSearchObject.Previous = null;
+                        First.Next.Previous = null;
+                        First = First.Next;
+                        Count--;
+                        return;
                     }
-                    else if(currentSearchObject == First)
+                    else if(currentItem == Tail)
                     {
+                        currentItem.Previous.Next = null;
+                        Count--;
+                        return;
+                    }
+                    else if (currentItem.Previous == null && currentItem.Next == null)
+                    {
+                        currentItem = null;
                         First = null;
+                        Count--;
+                        return;
                     }
                 }
-                currentSearchObject = currentSearchObject.Next;
+                currentItem = currentItem.Next;
             }
+        }
+
+        public bool Contains(T data)
+        {
+            DoubleNode<T> currentItem = First;
+            while (currentItem != null)
+            {
+                if (currentItem.Data.Equals(data))
+                    return true;
+                currentItem = currentItem.Next;
+            }
+            return false;
         }
 
         public void Clear()
