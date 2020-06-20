@@ -9,136 +9,73 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            DoubleList<string> names = new DoubleList<string>();
-            names.AddFirst("Bob");
-            names.Add("Joe");
-            names.Add("Smith");
-            names.Add("Tony");
-            names.ShowAll();
+            StackM<string> stackM = new StackM<string>();
+            stackM.Push("A");
+            stackM.Push("B");
+            stackM.Push("C");
 
-            Console.WriteLine(names.Contains("Joe"));
+            Console.WriteLine(stackM.Peek());
+            stackM.Push("D");
+            Console.WriteLine(stackM.Peek());
+
+            stackM.Pop();
+            stackM.Pop();
+            stackM.Pop();
+            Console.WriteLine(stackM.Peek());
         }
     }
 
-    public class DoubleList<T>
+    public class StackM<T>
     {
-        public DoubleNode<T> First { get; set; }
-        public int Count { get; private set; }
-        public bool IsEmpty { get { return Count == 0; } }
-        private DoubleNode<T> Tail;
-
-        public void AddFirst(T data)
+        private T[] items;
+        private int count;
+        private int initialCapacity = 10;
+        public StackM()
         {
-            DoubleNode<T> current = new DoubleNode<T>(data);
-            if (First == null)
-            {
-                First = current;
-                Tail = current;
-            }
-            else
-            {
-                DoubleNode<T> temp = First;
-                First = current;
-                temp.Previous = current;
-                current.Next = temp;
-            }
-            Count++;
-        }
-        public void Add(T data)
-        {
-            DoubleNode<T> current = new DoubleNode<T>(data);
-            if (First == null)
-            {
-                First = current;
-            }
-            else
-            {
-                Tail.Next = current;
-                current.Previous = Tail;
-            }
-            Count++;
-            Tail = current;
+            items = new T[initialCapacity];
         }
 
-        public void Remove(T data)
+        public int Count
         {
-            DoubleNode<T> currentItem = First;
-            while (currentItem != null)
-            {
-                if (currentItem.Data.Equals(data))
-                {
-                    if (currentItem.Previous != null && currentItem.Next != null)
-                    {
-                        currentItem.Next.Previous = currentItem.Previous;
-                        currentItem.Previous.Next = currentItem.Next;
-                        Count--;
-                        return;
-                    }
-                    else if(currentItem == First)
-                    {
-                        First.Next.Previous = null;
-                        First = First.Next;
-                        Count--;
-                        return;
-                    }
-                    else if(currentItem == Tail)
-                    {
-                        currentItem.Previous.Next = null;
-                        Count--;
-                        return;
-                    }
-                    else if (currentItem.Previous == null && currentItem.Next == null)
-                    {
-                        currentItem = null;
-                        First = null;
-                        Count--;
-                        return;
-                    }
-                }
-                currentItem = currentItem.Next;
-            }
+            get { return count; }
         }
 
-        public bool Contains(T data)
+        public bool IsEmpty
         {
-            DoubleNode<T> currentItem = First;
-            while (currentItem != null)
-            {
-                if (currentItem.Data.Equals(data))
-                    return true;
-                currentItem = currentItem.Next;
-            }
-            return false;
+            get { return count == 0; }
         }
 
-        public void Clear()
+        public void Push(T item)
         {
-            First = null;
-            Tail = null;
-            Count = 0;
+            if (count == items.Length)
+                Resize(items.Length * 2);
+
+            items[count++] = item;
         }
 
-        public void ShowAll()
+        public T Pop()
         {
-            DoubleNode<T> current = First;
-            while (current != null)
-            {
-                Console.WriteLine(current.Data);
-                current = current.Next;
-            }
-            Console.WriteLine();
+            if (IsEmpty)
+                throw new Exception("Stack is empty");
+            
+            return items[--count];
+        }
+
+        public T Peek()
+        {
+            if(IsEmpty)
+                throw new Exception("Stack is empty");
+
+            return items[count - 1];
+        }
+
+        public void Resize(int newLength)
+        {
+            T[] newItems = new T[newLength];
+            for (int i = 0; i < count; i++)
+                newItems[i] = items[i];
+
+            items = newItems;
         }
     }
-
-    public class DoubleNode<T>
-    {
-        public T Data { get; set; }
-        public DoubleNode(T data)
-        {
-            Data = data;
-        }
-        public DoubleNode<T> Next { get; set; }
-        public DoubleNode<T> Previous { get; set; }
-    }
-
 }
