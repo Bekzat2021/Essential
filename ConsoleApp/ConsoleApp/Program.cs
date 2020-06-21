@@ -9,64 +9,96 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            NodeStack<string> stack = new NodeStack<string>();
-            stack.Push("Bob");
-            stack.Push("Alice");
-            stack.Push("Sam");
-            stack.Push("Kate");
+            Queue<string> queue = new Queue<string>();
+            queue.Enqueue("Kate");
+            queue.Enqueue("Sam");
+            queue.Enqueue("Alice");
+            queue.Enqueue("Tom");
 
-            foreach (var item in stack)
+            foreach (var item in queue)
             {
                 Console.WriteLine(item);
             }
+            Console.WriteLine();
 
-            string head = stack.Peek();
-            Console.WriteLine($"Верхушка стека: {head}\n");
-            stack.Pop();
+            Console.WriteLine();
+            string firsItem = queue.Dequeue();
+            Console.WriteLine($"Извлеченный элемент: {firsItem}");
+            Console.WriteLine();
 
-            foreach (var item in stack)
+            foreach (var item in queue)
             {
                 Console.WriteLine(item);
             }
         }
     }
 
-    public class NodeStack<T> : IEnumerable<T>
+    public class Queue<T> : IEnumerable<T>
     {
-        Node<T> head;
+        public Node<T> Head { get; set; }
+        public Node<T> Tail { get; set; }
         int count;
+        public bool IsEmpty { get { return count == 0; } }
 
-        public bool IsEmpty { 
-            get { return count == 0; } 
-        }
-
-        public int Count {
-            get { return count; }
-        }
-
-        public void Push(T item)
+        public void Enqueue(T data)
         {
-            Node<T> node = new Node<T>(item);
-            node.Next = head;
-            head = node;
+            Node<T> item = new Node<T>(data);
+            Node<T> tempItem = Tail;
+            Tail = item;
+            if (count == 0)
+                Head = Tail;
+            else
+                tempItem.Next = Tail;
             count++;
         }
 
-        public T Pop()
+        public T Dequeue()
         {
             if (IsEmpty)
-                throw new InvalidOperationException("Стек пуст");
-            Node<T> temp = head;
-            head = head.Next;
+                throw new InvalidOperationException();
+            Node<T> tempNode = Head;
+            Head = Head.Next;
             count--;
-            return temp.Data;
+            return tempNode.Data;
         }
 
         public T Peek()
         {
             if (IsEmpty)
-                throw new InvalidOperationException("Стек пуст");
-            return head.Data;
+                throw new InvalidOperationException();
+            return Head.Data;
+        }
+
+        public bool Contains(T data)
+        {
+            Node<T> current = Head;
+            while (current != null)
+            {
+                if (current.Data.Equals(data))
+                    return true;
+                current = current.Next;
+            }
+            return false;
+        }
+
+        public T First
+        {
+            get
+            {
+                if (IsEmpty)
+                    throw new InvalidOperationException();
+                return Head.Data;
+            }
+        }
+
+        public T Last
+        {
+            get
+            {
+                if (IsEmpty)
+                    throw new InvalidOperationException();
+                return Tail.Data;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -76,8 +108,8 @@ namespace ConsoleApp
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            Node<T> current = head;
-            while(current != null)
+            Node<T> current = Head;
+            while (current != null)
             {
                 yield return current.Data;
                 current = current.Next;
