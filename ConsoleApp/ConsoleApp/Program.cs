@@ -9,73 +9,89 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            StackM<string> stackM = new StackM<string>();
-            stackM.Push("A");
-            stackM.Push("B");
-            stackM.Push("C");
+            NodeStack<string> stack = new NodeStack<string>();
+            stack.Push("Bob");
+            stack.Push("Alice");
+            stack.Push("Sam");
+            stack.Push("Kate");
 
-            Console.WriteLine(stackM.Peek());
-            stackM.Push("D");
-            Console.WriteLine(stackM.Peek());
+            foreach (var item in stack)
+            {
+                Console.WriteLine(item);
+            }
 
-            stackM.Pop();
-            stackM.Pop();
-            stackM.Pop();
-            Console.WriteLine(stackM.Peek());
+            string head = stack.Peek();
+            Console.WriteLine($"Верхушка стека: {head}\n");
+            stack.Pop();
+
+            foreach (var item in stack)
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 
-    public class StackM<T>
+    public class NodeStack<T> : IEnumerable<T>
     {
-        private T[] items;
-        private int count;
-        private int initialCapacity = 10;
-        public StackM()
-        {
-            items = new T[initialCapacity];
+        Node<T> head;
+        int count;
+
+        public bool IsEmpty { 
+            get { return count == 0; } 
         }
 
-        public int Count
-        {
+        public int Count {
             get { return count; }
-        }
-
-        public bool IsEmpty
-        {
-            get { return count == 0; }
         }
 
         public void Push(T item)
         {
-            if (count == items.Length)
-                Resize(items.Length * 2);
-
-            items[count++] = item;
+            Node<T> node = new Node<T>(item);
+            node.Next = head;
+            head = node;
+            count++;
         }
 
         public T Pop()
         {
             if (IsEmpty)
-                throw new Exception("Stack is empty");
-            
-            return items[--count];
+                throw new InvalidOperationException("Стек пуст");
+            Node<T> temp = head;
+            head = head.Next;
+            count--;
+            return temp.Data;
         }
 
         public T Peek()
         {
-            if(IsEmpty)
-                throw new Exception("Stack is empty");
-
-            return items[count - 1];
+            if (IsEmpty)
+                throw new InvalidOperationException("Стек пуст");
+            return head.Data;
         }
 
-        public void Resize(int newLength)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            T[] newItems = new T[newLength];
-            for (int i = 0; i < count; i++)
-                newItems[i] = items[i];
-
-            items = newItems;
+            return ((IEnumerable)this).GetEnumerator();
         }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            Node<T> current = head;
+            while(current != null)
+            {
+                yield return current.Data;
+                current = current.Next;
+            }
+        }
+    }
+
+    public class Node<T>
+    {
+        public Node(T data)
+        {
+            Data = data; 
+        }
+        public T Data { get; set; }
+        public Node<T> Next { get; set; }
     }
 }
