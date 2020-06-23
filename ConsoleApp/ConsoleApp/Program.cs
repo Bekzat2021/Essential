@@ -9,135 +9,103 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            Deque<string> usersDeck = new Deque<string>();
-            usersDeck.AddFirst("Alice");
-            usersDeck.AddLast("Kate");
-            usersDeck.AddLast("Tom");
+            CircularLinkedList<string> linkedList = new CircularLinkedList<string>();
 
-            foreach (var item in usersDeck)
+            linkedList.Add("Bob");
+            linkedList.Add("Tom");
+            linkedList.Add("Sam");
+            linkedList.Add("Joe");
+
+            foreach (var item in linkedList)
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+
+            linkedList.Remove("Joe");
+
+            foreach (var item in linkedList)
             {
                 Console.WriteLine(item);
             }
 
-            string removedItem = usersDeck.RemoveFirst();
-            Console.WriteLine($"\nDeleted: {removedItem}\n");
-
-            foreach (var item in usersDeck)
-            {
-                Console.WriteLine(item);
-            }
+            Console.WriteLine();
+            Console.WriteLine(linkedList.Contains("Bob"));
         }
     }
 
-    public class Deque<T> : IEnumerable<T>
+    public class CircularLinkedList<T> : IEnumerable<T>
     {
-        DoubleNode<T> head;
-        DoubleNode<T> tail;
+        public int Count { get { return count; } }
+        public bool IsEmpty { get { return count == 0; } }
+        Node<T> head;
+        Node<T> tail;
         int count;
 
-        public void AddLast(T data)
+        public void Add(T data)
         {
-            DoubleNode<T> node = new DoubleNode<T>(data);
-            if (head == null)
+            Node<T> node = new Node<T>(data);
+            if(count == 0)
+            {
                 head = node;
+                tail = node;
+                tail.Next = head;
+            }
             else
             {
+                node.Next = head;
                 tail.Next = node;
-                node.Previous = tail;
+                tail = node;
             }
-            tail = node;
             count++;
         }
 
-        public void AddFirst(T data)
+        public bool Remove(T data)
         {
-            DoubleNode<T> node = new DoubleNode<T>(data);
-            DoubleNode<T> temp = head;
-            node.Next = temp;
-            head = node;
             if (count == 0)
-                tail = head;
-            else
-                temp.Previous = node;
-            count++;
-        }
+                return false;
 
-        public T RemoveFirst()
-        {
-            if (count == 0)
-                throw new InvalidOperationException();
-            T output = head.Data;
             if(count == 1)
             {
                 head = tail = null;
+                return true;
             }
-            else
-            {
-                head = head.Next;
-                head.Previous = null;
-            }
-            count--;
-            return output;
-        }
+                
 
-        public T RemoveLast()
-        {
-            if (count == 0)
-                throw new InvalidOperationException();
-            T output = tail.Data;
-            if (count == 0)
+            Node<T> current = head;
+            Node<T> previous = null;
+            do
             {
-                head = tail = null;
-            }
-            else
-            {
-                tail = tail.Previous;
-                tail.Next = null;
-            }
-            count--;
-            return output;
-        }
+                if (current.Data.Equals(data))
+                {
+                    previous.Next = current.Next;
+                    count--;
+                    return true;
+                }
+                previous = current;
+                current = current.Next;
+            } while (current != null);
 
-        public T First
-        {
-            get
-            {
-                if (IsEmpty)
-                    throw new InvalidOperationException();
-                return head.Data;
-            }
-        }
-
-        public T Last
-        {
-            get
-            {
-                if (IsEmpty)
-                    throw new InvalidOperationException();
-                return tail.Data;
-            }
-        }
-
-        public bool IsEmpty { get { return count == 0; } }
-        public int Count { get { return count; } }
-
-        public void Clear()
-        {
-            head = null;
-            tail = null;
-            count = 0;
+            return false;
         }
 
         public bool Contains(T data)
         {
-            DoubleNode<T> current = head;
-            while (current != null)
+            Node<T> current = head;
+            do
             {
                 if (current.Data.Equals(data))
+                {
                     return true;
+                }
                 current = current.Next;
-            }
+            } while (current != head);
             return false;
+        }
+
+        public void Clear()
+        {
+            head = tail = null;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -147,21 +115,20 @@ namespace ConsoleApp
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            DoubleNode<T> current = head;
-            while (current != null)
+            Node<T> current = head;
+            do
             {
                 yield return current.Data;
                 current = current.Next;
-            }
+            } while (current != head);
         }
     }
 
-    public class DoubleNode<T>
+    public class Node<T>
     {
         public T Data { get; set; }
-        public DoubleNode<T> Previous { get; set; }
-        public DoubleNode<T> Next { get; set; }
-        public DoubleNode(T data)
+        public Node<T> Next { get; set; }
+        public Node(T data )
         {
             Data = data;
         }
